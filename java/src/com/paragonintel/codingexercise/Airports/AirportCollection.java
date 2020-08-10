@@ -1,19 +1,27 @@
 package com.paragonintel.codingexercise.Airports;
 
 import com.google.gson.Gson;
-import com.paragonintel.codingexercise.GeoCoordinate;
+import com.paragonintel.codingexercise.Location.GeoCoordinate;
+import net.sf.javaml.core.kdtree.KDTree;
 
 import java.io.*;
 
 public class AirportCollection {
 
-    public AirportCollection(Airport[] airports) {
-        throw new UnsupportedOperationException();
+    KDTree airports;  // Use a KDTree to lookup nearest airport in log(n) time
+
+    public AirportCollection(Airport[] airportArray) {
+        airports = new KDTree(2);
+        for (Airport airport : airportArray) {
+            double[] coordinates = new double[2];
+            coordinates[0] = airport.getLatitude();
+            coordinates[1] = airport.getLongitude();
+            airports.insert(coordinates, airport);
+        }
     }
 
     public static AirportCollection loadFromFile(String filePath) throws IOException {
         var file = new File(filePath);
-
         if (!file.exists()) {
             throw new FileNotFoundException("File not found: " + filePath);
         }
@@ -25,6 +33,9 @@ public class AirportCollection {
     }
 
     public Airport getClosestAirport(GeoCoordinate coordinate) {
-        throw new UnsupportedOperationException();
+        double[] latLongCoordinate = new double[2];
+        latLongCoordinate[0] = coordinate.getLatitude();
+        latLongCoordinate[1] = coordinate.getLongitude();
+        return (Airport) airports.nearest(latLongCoordinate);
     }
 }

@@ -1,6 +1,7 @@
 package com.paragonintel.codingexercise.Events;
 
 import com.google.gson.Gson;
+import com.paragonintel.codingexercise.Location.GeoCoordinate;
 
 import java.util.Date;
 
@@ -22,7 +23,7 @@ public class AdsbEvent {
         this.identifier = identifier;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return this.latitude;
     }
 
@@ -30,7 +31,7 @@ public class AdsbEvent {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return this.longitude;
     }
 
@@ -38,7 +39,11 @@ public class AdsbEvent {
         this.longitude = longitude;
     }
 
-    public double getAltitude() {
+    public GeoCoordinate getGeoCoordinate() {
+        return new GeoCoordinate(this.latitude, this.longitude);
+    }
+
+    public Double getAltitude() {
         return this.altitude;
     }
 
@@ -46,7 +51,7 @@ public class AdsbEvent {
         this.altitude = altitude;
     }
 
-    public double getSpeed() {
+    public Double getSpeed() {
         return this.speed;
     }
 
@@ -54,7 +59,7 @@ public class AdsbEvent {
         this.speed = speed;
     }
 
-    public double getHeading() {
+    public Double getHeading() {
         return this.heading;
     }
 

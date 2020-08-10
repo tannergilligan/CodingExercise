@@ -1,5 +1,7 @@
 package com.paragonintel.codingexercise.Airports;
 
+import com.paragonintel.codingexercise.Location.GeoCoordinate;
+
 public class Airport {
     private String identifier;
     private double longitude;
@@ -36,5 +38,9 @@ public class Airport {
 
     public void setElevation(int elevation) {
         this.elevation = elevation;
+    }
+
+    public GeoCoordinate getGeoCoordinate() {
+        return new GeoCoordinate(this.latitude, this.longitude);
     }
 }
