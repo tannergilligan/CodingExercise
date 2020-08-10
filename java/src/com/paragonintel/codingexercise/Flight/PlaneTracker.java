@@ -30,16 +30,16 @@ public class PlaneTracker {
     // Defines the window-size for the distance-to-airport moving average
     private static final Long MOVING_AVERAGE_TIME_WINDOW = 5 * 60 * 1000L;  // 5 minutes
 
-    private final String planeId;
-    private final List<Flight> flights;
-    private final AirportCollection airports;
-    private final FlightStatTracker flightStatsTracker;
-    private final MovingAverageCalculator averageDistanceToAirport;
+    private final String planeId; // Plane ID being tracked by this class
+    private final List<Flight> flights; // List of Flights this plane has completed
+    private final AirportCollection airports; // Optimized collection of all Airports
+    private final FlightStatTracker flightStatsTracker; // Tracks stats of current flight
+    private final MovingAverageCalculator averageDistanceToAirport; // distance to nearest airport
 
-    private Boolean airborne;
-    private Date lastTransitionTime;
-    private Airport mostRecentlyVisited;
-    private Airport latestClosestAirport;
+    private Boolean airborne; // Says whether the plane is in the air or not
+    private Date lastTransitionTime; // The last time we switched (airborne -> landed), or vice versa
+    private Airport mostRecentlyVisited; // The last airport we landed at
+    private Airport latestClosestAirport; // The airport we are currently closest to
 
     public PlaneTracker(String planeId, AirportCollection airports) {
         this.flightStatsTracker = new FlightStatTracker();
@@ -113,6 +113,13 @@ public class PlaneTracker {
                 handleFlightTransition(previouslyAirborne);
             }
         }
+
+        // TODO:
+        // In addition, we could get better results by also handling messages without lat/long.
+        // E.g. We know a plane is descending near an airport, but we never get an event with
+        // coordinates saying it's "at" the airport. If we were to receive a message without
+        // coordinates, but with speed=0, we could reasonably deduce it landed there. I'll leave
+        // this as a to-do though, as I've already spent way too much time on this :)
     }
 
     /**
@@ -184,6 +191,7 @@ public class PlaneTracker {
      * @param previouslyAirborne The state of 'airborne' before the most recently computed value.
      */
     private void handleFlightTransition(Boolean previouslyAirborne) {
+        // If airborne status didn't change, we didn't transition, so don't do anything
         if (previouslyAirborne == airborne) return;
 
         // If we just went airborne, reset the tracker to 'start' the flight.
